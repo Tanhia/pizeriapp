@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú Pizzería</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+        }
+        .menu {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #d63031;
+        }
+        .categoria {
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2d3436;
+            border-bottom: 2px solid #d63031;
+            padding-bottom: 5px;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .precio {
+            color: #d63031;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <h1>🍕 Pizzería La Deliciosa 🍕</h1>
+        
+        <div class="categoria">
+            <h2>Pizzas Clásicas</h2>
+            <div class="item">
+                <span>Margherita (tomate, mozzarella, albahaca)</span>
+                <span class="precio">$12.99</span>
+            </div>
+            <div class="item">
+                <span>Pepperoni (tomate, mozzarella, pepperoni)</span>
+                <span class="precio">$14.99</span>
+            </div>
+            <div class="item">
+                <span>Hawaiana (tomate, mozzarella, jamón, piña)</span>
+                <span class="precio">$15.99</span>
+            </div>
+        </div>
+
+        <div class="categoria">
+            <h2>Pizzas Especiales</h2>
+            <div class="item">
+                <span>Cuatro Quesos (mozzarella, gorgonzola, parmesano, provolone)</span>
+                <span class="precio">$16.99</span>
+            </div>
+            <div class="item">
+                <span>Vegetariana (tomate, mozzarella, pimiento, cebolla, champiñones)</span>
+                <span class="precio">$15.99</span>
+            </div>
+            <div class="item">
+                <span>Suprema (tomate, mozzarella, pepperoni, pimiento, cebolla, aceitunas)</span>
+                <span class="precio">$17.99</span>
+            </div>
+        </div>
+
+        <div class="categoria">
+            <h2>Bebidas</h2>
+            <div class="item">
+                <span>Refresco (350ml)</span>
+                <span class="precio">$2.50</span>
+            </div>
+            <div class="item">
+                <span>Agua Mineral</span>
+                <span class="precio">$1.99</span>
+            </div>
+            <div class="item">
+                <span>Cerveza</span>
+                <span class="precio">$3.99</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
