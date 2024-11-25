@@ -3,95 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú Pizzería</title>
+    <title>Pizzas Ray Teziutla</title>
     <style>
         body {
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
-            margin: 40px;
-            background-color: #f5f5f5;
         }
-        .menu {
-            max-width: 800px;
-            margin: 0 auto;
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #ff6b6b;
+            color: white;
+        }
+        .promociones {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .promo-card {
+            width: 300px;
+            text-align: center;
+        }
+        .promo-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .ordenar-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
             background-color: white;
             padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            margin: 20% auto;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        h1 {
-            text-align: center;
-            color: #d63031;
+        .form-group {
+            margin-bottom: 15px;
         }
-        .categoria {
-            margin-bottom: 30px;
-        }
-        h2 {
-            color: #2d3436;
-            border-bottom: 2px solid #d63031;
-            padding-bottom: 5px;
-        }
-        .item {
-            display: flex;
-            justify-content: space-between;
-            margin: 10px 0;
-        }
-        .precio {
-            color: #d63031;
-            font-weight: bold;
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <h1>🍕 Pizzería La Deliciosa 🍕</h1>
-        
-        <div class="categoria">
-            <h2>Pizzas Clásicas</h2>
-            <div class="item">
-                <span>Margherita (tomate, mozzarella, albahaca)</span>
-                <span class="precio">$12.99</span>
-            </div>
-            <div class="item">
-                <span>Pepperoni (tomate, mozzarella, pepperoni)</span>
-                <span class="precio">$14.99</span>
-            </div>
-            <div class="item">
-                <span>Hawaiana (tomate, mozzarella, jamón, piña)</span>
-                <span class="precio">$15.99</span>
-            </div>
-        </div>
+    <div class="header">
+        <h1>Pizzas Ray Teziutla</h1>
+    </div>
 
-        <div class="categoria">
-            <h2>Pizzas Especiales</h2>
-            <div class="item">
-                <span>Cuatro Quesos (mozzarella, gorgonzola, parmesano, provolone)</span>
-                <span class="precio">$16.99</span>
-            </div>
-            <div class="item">
-                <span>Vegetariana (tomate, mozzarella, pimiento, cebolla, champiñones)</span>
-                <span class="precio">$15.99</span>
-            </div>
-            <div class="item">
-                <span>Suprema (tomate, mozzarella, pepperoni, pimiento, cebolla, aceitunas)</span>
-                <span class="precio">$17.99</span>
-            </div>
+    <div class="promociones">
+        <div class="promo-card">
+            <img src="promo1.jpg" alt="Promoción 1">
+            <button class="ordenar-btn" onclick="abrirFormulario(1)">Ordenar</button>
         </div>
-
-        <div class="categoria">
-            <h2>Bebidas</h2>
-            <div class="item">
-                <span>Refresco (350ml)</span>
-                <span class="precio">$2.50</span>
-            </div>
-            <div class="item">
-                <span>Agua Mineral</span>
-                <span class="precio">$1.99</span>
-            </div>
-            <div class="item">
-                <span>Cerveza</span>
-                <span class="precio">$3.99</span>
-            </div>
+        <div class="promo-card">
+            <img src="promo2.jpg" alt="Promoción 2">
+            <button class="ordenar-btn" onclick="abrirFormulario(2)">Ordenar</button>
+        </div>
+        <div class="promo-card">
+            <img src="promo3.jpg" alt="Promoción 3">
+            <button class="ordenar-btn" onclick="abrirFormulario(3)">Ordenar</button>
         </div>
     </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Datos de Entrega</h2>
+            <form id="ordenForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre completo:</label>
+                    <input type="text" id="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="direccion">Dirección:</label>
+                    <input type="text" id="direccion" required>
+                </div>
+                <div class="form-group">
+                    <label for="telefono">Teléfono:</label>
+                    <input type="tel" id="telefono" required>
+                </div>
+                <button type="submit" class="ordenar-btn">Enviar y ordenar</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let promocionSeleccionada = 0;
+
+        function abrirFormulario(promoNum) {
+            promocionSeleccionada = promoNum;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        document.getElementById('ordenForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const direccion = document.getElementById('direccion').value;
+            const telefono = document.getElementById('telefono').value;
+
+            const mensaje = `¡Nueva orden!\nPromoción: ${promocionSeleccionada}\nNombre: ${nombre}\nDirección: ${direccion}\nTeléfono: ${telefono}`;
+            
+            const whatsappUrl = `https://wa.me/522221587224?text=${encodeURIComponent(mensaje)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('ordenForm').reset();
+        });
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('modal')) {
+                document.getElementById('modal').style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
+
+
