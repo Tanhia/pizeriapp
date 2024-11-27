@@ -5,43 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pizzas Ray Teziutla</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             font-family: Arial, sans-serif;
         }
-        .header {
-            text-align: center;
-            padding: 20px;
-            background-color: #ff6b6b;
+
+        header {
+            background-color: #d32f2f;
             color: white;
+            text-align: center;
+            padding: 2rem;
         }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
         .promociones {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
+            width: 100%;
             padding: 20px;
         }
-        .promo-card {
-            width: 300px;
-            text-align: center;
-        }
-        .promo-card img {
+
+        .promociones img {
             width: 100%;
             height: auto;
+            margin-bottom: 20px;
             border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        .ordenar-btn {
-            background-color: #4CAF50;
-            color: white;
+
+        @media (min-width: 768px) {
+            .promociones {
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
+            }
+
+            .promociones img {
+                width: calc(33.33% - 14px);
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Pizzas Ray Teziutla</h1>
+        <p>¡Las mejores pizzas de la región!</p>
+    </header>
+    <style>
+        .menu-button {
+            display: block;
+            margin: 20px auto;
             padding: 10px 20px;
+            background-color: #d32f2f;
+            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
+            font-size: 1.2rem;
         }
-        .modal {
+
+        .menu-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .overlay {
             display: none;
             position: fixed;
             top: 0;
@@ -49,96 +93,105 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0,0,0,0.5);
-        }
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            width: 80%;
-            max-width: 500px;
-            margin: 20% auto;
-            border-radius: 10px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+            z-index: 999;
         }
     </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Pizzas Ray Teziutla</h1>
-    </div>
 
-    <div class="promociones">
-        <div class="promo-card">
-            <img src="promo1.jpg" alt="Promoción 1">
-            <button class="ordenar-btn" onclick="abrirFormulario(1)">Ordenar</button>
-        </div>
-        <div class="promo-card">
-            <img src="promo2.jpg" alt="Promoción 2">
-            <button class="ordenar-btn" onclick="abrirFormulario(2)">Ordenar</button>
-        </div>
-        <div class="promo-card">
-            <img src="promo3.jpg" alt="Promoción 3">
-            <button class="ordenar-btn" onclick="abrirFormulario(3)">Ordenar</button>
-        </div>
-    </div>
+    <button class="menu-button" onclick="abrirMenu()">Menú</button>
 
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <h2>Datos de Entrega</h2>
-            <form id="ordenForm">
-                <div class="form-group">
-                    <label for="nombre">Nombre completo:</label>
-                    <input type="text" id="nombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="direccion">Dirección:</label>
-                    <input type="text" id="direccion" required>
-                </div>
-                <div class="form-group">
-                    <label for="telefono">Teléfono:</label>
-                    <input type="tel" id="telefono" required>
-                </div>
-                <button type="submit" class="ordenar-btn">Enviar y ordenar</button>
-            </form>
-        </div>
+    <div class="overlay" id="overlay"></div>
+    <div class="menu-modal" id="menuModal">
+        <h2>Selecciona tus ingredientes (máximo 4)</h2>
+        <form id="menuForm">
+            <label><input type="checkbox" name="ingrediente" value="Hawaiana"> Hawaiana</label><br>
+            <label><input type="checkbox" name="ingrediente" value="Peperoni"> Peperoni</label><br>
+            <label><input type="checkbox" name="ingrediente" value="Salchicha"> Salchicha</label><br>
+            <label><input type="checkbox" name="ingrediente" value="Jamón c/champiñon"> Jamón c/champiñon</label><br>
+            <label><input type="checkbox" name="ingrediente" value="Carnes frías"> Carnes frías</label><br>
+            <label><input type="checkbox" name="ingrediente" value="Combinada"> Combinada</label><br>
+            <label><input type="checkbox" name="ingrediente" value="Ranchera"> Ranchera</label><br>
+            <label><input type="checkbox" name="ingrediente" value="Vegetariana"> Vegetariana</label><br>
+            <label><input type="checkbox" name="ingrediente" value="4 estaciones"> 4 estaciones</label><br>
+            <button type="button" onclick="cerrarMenu()">Cerrar</button>
+        </form>
     </div>
 
     <script>
-        let promocionSeleccionada = 0;
-
-        function abrirFormulario(promoNum) {
-            promocionSeleccionada = promoNum;
-            document.getElementById('modal').style.display = 'block';
+        function abrirMenu() {
+            document.getElementById('menuModal').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
         }
 
-        document.getElementById('ordenForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        function cerrarMenu() {
+            document.getElementById('menuModal').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                let checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
+                if (checkedBoxes.length > 4) {
+                    this.checked = false;
+                    alert('Solo puedes seleccionar máximo 4 ingredientes');
+                }
+            });
+        });
+    </script>
+
+    <div class="promociones">
+        <img src="https://scontent.fmex27-1.fna.fbcdn.net/v/t39.30808-6/466969215_890077779977323_7431633752299708796_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeH-N6IfRATCLDjuSTi4pnQQeaa8pWCFVCZ5prylYIVUJsFcEaN5A5sr9p3PhuoQIZ_r3-SozNZMQa9xYixrSByR&_nc_ohc=KYpHlU3cZ18Q7kNvgFMml8G&_nc_zt=23&_nc_ht=scontent.fmex27-1.fna&_nc_gid=AiW7vMlc6p_ZylVZiZ7pqE7&oh=00_AYCbqZXUwJ38aSLYwpfYoqdCsdgtwlfVjUfH8I4SsZl7cw&oe=674C2C48" alt="Promoción 1">
+        <img src="https://scontent.fmex31-1.fna.fbcdn.net/v/t39.30808-6/467202069_890077833310651_253748606978010507_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGvFSlzOKUPjMAfadXickiEvUznK0EImpW9TOcrQQialT_36hEfLi8lyKQt3qZ8GzSYcKkJxGjiKgIDdzKn-lM6&_nc_ohc=o82-cQHuqKIQ7kNvgHqHtyG&_nc_zt=23&_nc_ht=scontent.fmex31-1.fna&_nc_gid=AzHc4Frx6NOrpJkyu5a7cwE&oh=00_AYDdGPp9096SP1-Pc7CKFN79IKZpHTr2xBfT5rH6gCDMAA&oe=674C2B5B" alt="Promoción 2">
+        <img src="https://scontent.fmex36-1.fna.fbcdn.net/v/t39.30808-6/466793556_890077806643987_6407134262099134620_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeEBzOqQ7ks4RwYvABPxFSAwhYPqW_XmhF-Fg-pb9eaEXxoSix2HWB_WegYiSvvMjrwmK0bKpHqtkX1jt4LuCCmi&_nc_ohc=LEE4Yn1LMtkQ7kNvgHj1R-2&_nc_zt=23&_nc_ht=scontent.fmex36-1.fna&_nc_gid=AfNZBlvtHZZmaTgWcPCemNP&oh=00_AYDXnj1Ql1rar8rhEOoQcm8XMgfyzGnEquynRYhXTEnsaw&oe=674C1EE1" alt="Promoción 3">
+    </div>
+</body>
+    <div id="formularioPromo" class="menu-modal">
+        <h2>Ordenar Promo Jumbo</h2>
+        <form id="promoForm">
+            <label>Nombre completo:<br>
+                <input type="text" id="nombre" required>
+            </label><br>
+            <label>Dirección:<br>
+                <textarea id="direccion" required></textarea>
+            </label><br>
+            <label>Número de teléfono:<br>
+                <input type="tel" id="telefono" required>
+            </label><br>
+            <button type="button" onclick="enviarOrden()">Ordenar</button>
+            <button type="button" onclick="cerrarFormulario()">Cancelar</button>
+        </form>
+    </div>
+
+    <script>
+        document.querySelector('.promociones img:first-child').addEventListener('click', function() {
+            document.getElementById('formularioPromo').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        });
+
+        function cerrarFormulario() {
+            document.getElementById('formularioPromo').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function enviarOrden() {
             const nombre = document.getElementById('nombre').value;
             const direccion = document.getElementById('direccion').value;
             const telefono = document.getElementById('telefono').value;
 
-            const mensaje = `¡Nueva orden!\nPromoción: ${promocionSeleccionada}\nNombre: ${nombre}\nDirección: ${direccion}\nTeléfono: ${telefono}`;
-            
-            const whatsappUrl = `https://wa.me/522221587224?text=${encodeURIComponent(mensaje)}`;
-            window.open(whatsappUrl, '_blank');
-            
-            document.getElementById('modal').style.display = 'none';
-            document.getElementById('ordenForm').reset();
-        });
-
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('modal')) {
-                document.getElementById('modal').style.display = 'none';
+            if(nombre && direccion && telefono) {
+                const mensaje = encodeURIComponent(
+                    `*Nueva Orden - Promo Jumbo*\n` +
+                    `Nombre: ${nombre}\n` +
+                    `Dirección: ${direccion}\n` +
+                    `Teléfono: ${telefono}`
+                );
+                window.open(`https://wa.me/522221587224?text=${mensaje}`);
+                cerrarFormulario();
+            } else {
+                alert('Por favor llena todos los campos');
             }
         }
     </script>
-</body>
 </html>
+
 
 
