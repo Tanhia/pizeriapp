@@ -101,24 +101,58 @@
 
     <div class="overlay" id="overlay"></div>
     <div class="menu-modal" id="menuModal">
-        <h2>Selecciona tus ingredientes (máximo 4)</h2>
-        <form id="menuForm">
-            <label><input type="checkbox" name="ingrediente" value="Hawaiana"> Hawaiana</label><br>
-            <label><input type="checkbox" name="ingrediente" value="Peperoni"> Peperoni</label><br>
-            <label><input type="checkbox" name="ingrediente" value="Salchicha"> Salchicha</label><br>
-            <label><input type="checkbox" name="ingrediente" value="Jamón c/champiñon"> Jamón c/champiñon</label><br>
-            <label><input type="checkbox" name="ingrediente" value="Carnes frías"> Carnes frías</label><br>
-            <label><input type="checkbox" name="ingrediente" value="Combinada"> Combinada</label><br>
-            <label><input type="checkbox" name="ingrediente" value="Ranchera"> Ranchera</label><br>
-            <label><input type="checkbox" name="ingrediente" value="Vegetariana"> Vegetariana</label><br>
-            <label><input type="checkbox" name="ingrediente" value="4 estaciones"> 4 estaciones</label><br>
-            <h3>Selecciona el tamaño:</h3>
-            <label><input type="radio" name="tamano" value="chica"> Chica ($110)</label><br>
-            <label><input type="radio" name="tamano" value="mediana"> Mediana ($140)</label><br>
-            <label><input type="radio" name="tamano" value="familiar"> Familiar ($180)</label><br>
-            <label><input type="radio" name="tamano" value="jumbo"> Jumbo ($240)</label><br>
-            <label><input type="radio" name="tamano" value="super"> Super ($400)</label><br>
-            <button type="button" onclick="cerrarMenu()">Cerrar</button>
+        <h2 style="text-align: center; color: #d32f2f; margin-bottom: 20px;">Selecciona tus ingredientes (máximo 4)</h2>
+        <form id="menuForm" style="max-width: 400px; margin: 0 auto;">
+            <div class="ingredientes" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px;">
+                <label style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="ingrediente" value="Hawaiana"> Hawaiana
+                </label>
+                <label style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="ingrediente" value="Peperoni"> Peperoni
+                </label>
+                <label style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="ingrediente" value="Salchicha"> Salchicha
+                </label>
+                <label style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="ingrediente" value="Jamón c/champiñon"> Jamón c/champiñon
+                </label>
+                <label style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="ingrediente" value="Carnes frías"> Carnes frías
+                </label>
+                <label style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="ingrediente" value="Combinada"> Combinada
+                </label>
+                <label style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="ingrediente" value="Ranchera"> Ranchera
+                </label>
+                <label style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="ingrediente" value="Vegetariana"> Vegetariana
+                </label>
+                <label style="padding: 8px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
+                    <input type="checkbox" name="ingrediente" value="4 estaciones"> 4 estaciones
+                </label>
+            </div>
+
+            <h3 style="text-align: center; color: #d32f2f; margin: 20px 0;">Selecciona el tamaño:</h3>
+            <div class="tamanos" style="display: flex; flex-direction: column; gap: 10px;">
+                <label style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
+                    <input type="radio" name="tamano" value="chica"> Chica ($110)
+                </label>
+                <label style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
+                    <input type="radio" name="tamano" value="mediana"> Mediana ($140)
+                </label>
+                <label style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
+                    <input type="radio" name="tamano" value="familiar"> Familiar ($180)
+                </label>
+                <label style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
+                    <input type="radio" name="tamano" value="jumbo"> Jumbo ($240)
+                </label>
+                <label style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; cursor: pointer; transition: all 0.3s;">
+                    <input type="radio" name="tamano" value="super"> Super ($400)
+                </label>
+            </div>
+            
+            <button type="button" onclick="cerrarMenu()" style="display: block; width: 100%; margin-top: 20px; padding: 10px; background-color: #d32f2f; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 1.1rem;">Cerrar</button>
         </form>
     </div>
 
@@ -184,7 +218,7 @@
                 if (!resumenOrdenes) {
                     resumenOrdenes = document.createElement('div');
                     resumenOrdenes.id = 'resumenOrdenes';
-                    document.body.appendChild(resumenOrdenes);
+                    document.getElementById('menuModal').appendChild(resumenOrdenes);
                 }
 
                 let total = ordenes.reduce((sum, orden) => sum + orden.precio, 0);
@@ -200,12 +234,10 @@
                         </div>
                     `).join('')}
                     <p><strong>Total: $${total}</strong></p>
-                    <button onclick="enviarOrden()">Enviar por WhatsApp</button>
+                    <button onclick="mostrarFormulario()">Enviar por WhatsApp</button>
                 `;
 
                 limpiarSeleccion();
-                document.getElementById('formularioPromo').style.display = 'block';
-                document.getElementById('overlay').style.display = 'block';
             }
         }
 
