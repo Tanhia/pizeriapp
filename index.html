@@ -112,11 +112,26 @@
             <label><input type="checkbox" name="ingrediente" value="Ranchera"> Ranchera</label><br>
             <label><input type="checkbox" name="ingrediente" value="Vegetariana"> Vegetariana</label><br>
             <label><input type="checkbox" name="ingrediente" value="4 estaciones"> 4 estaciones</label><br>
+            <h3>Selecciona el tamaño:</h3>
+            <label><input type="radio" name="tamano" value="chica"> Chica ($110)</label><br>
+            <label><input type="radio" name="tamano" value="mediana"> Mediana ($140)</label><br>
+            <label><input type="radio" name="tamano" value="familiar"> Familiar ($180)</label><br>
+            <label><input type="radio" name="tamano" value="jumbo"> Jumbo ($240)</label><br>
+            <label><input type="radio" name="tamano" value="super"> Super ($400)</label><br>
             <button type="button" onclick="cerrarMenu()">Cerrar</button>
         </form>
     </div>
 
     <script>
+        let ordenes = [];
+        let preciosTamanos = {
+            'chica': 110,
+            'mediana': 140, 
+            'familiar': 180,
+            'jumbo': 240,
+            'super': 400
+        };
+
         function abrirMenu() {
             document.getElementById('menuModal').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
@@ -125,6 +140,118 @@
         function cerrarMenu() {
             document.getElementById('menuModal').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
+            limpiarSeleccion();
+        }
+
+        function actualizarResumen() {
+            let ingredientes = [];
+            document.querySelectorAll('input[name="ingrediente"]:checked').forEach(checkbox => {
+                ingredientes.push(checkbox.value);
+            });
+
+            let tamano = document.querySelector('input[name="tamano"]:checked')?.value;
+            let precio = tamano ? preciosTamanos[tamano] : 0;
+
+            let resumenDiv = document.getElementById('resumenPedido');
+            if (!resumenDiv) {
+                resumenDiv = document.createElement('div');
+                resumenDiv.id = 'resumenPedido';
+                document.getElementById('menuForm').appendChild(resumenDiv);
+            }
+
+            if (ingredientes.length > 0 && tamano) {
+                resumenDiv.innerHTML = `
+                    <h3>Resumen del pedido:</h3>
+                    <p>Tamaño: ${tamano}</p>
+                    <p>Ingredientes: ${ingredientes.join(', ')}</p>
+                    <p>Total: $${precio}</p>
+                    <button type="button" onclick="agregarOrden()">Agregar orden</button>
+                `;
+            } else {
+                resumenDiv.innerHTML = '';
+            }
+        }
+        function agregarOrden() {
+            let ingredientes = Array.from(document.querySelectorAll('input[name="ingrediente"]:checked')).map(cb => cb.value);
+            let tamano = document.querySelector('input[name="tamano"]:checked')?.value;
+            let precio = tamano ? preciosTamanos[tamano] : 0;
+
+            if (ingredientes.length > 0 && tamano) {
+                ordenes.push({ingredientes, tamano, precio});
+                
+                // Actualizar resumen de órdenes
+                let resumenOrdenes = document.getElementById('resumenOrdenes');
+                if (!resumenOrdenes) {
+                    resumenOrdenes = document.createElement('div');
+                    resumenOrdenes.id = 'resumenOrdenes';
+                    document.body.appendChild(resumenOrdenes);
+                }
+
+                let total = ordenes.reduce((sum, orden) => sum + orden.precio, 0);
+                
+                resumenOrdenes.innerHTML = `
+                    <h3>Resumen de Órdenes:</h3>
+                    ${ordenes.map((orden, index) => `
+                        <div class="orden">
+                            <p>Orden ${index + 1}:</p>
+                            <p>Tamaño: ${orden.tamano}</p>
+                            <p>Ingredientes: ${orden.ingredientes.join(', ')}</p>
+                            <p>Precio: $${orden.precio}</p>
+                        </div>
+                    `).join('')}
+                    <p><strong>Total: $${total}</strong></p>
+                    <button onclick="enviarOrden()">Enviar por WhatsApp</button>
+                `;
+
+                limpiarSeleccion();
+                document.getElementById('formularioPromo').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+            }
+        }
+
+        function enviarOrden() {
+            let nombre = document.getElementById('nombre').value;
+            let direccion = document.getElementById('direccion').value;
+            let telefono = document.getElementById('telefono').value;
+
+            if (!nombre || !direccion || !telefono) {
+                alert('Por favor complete todos los campos');
+                return;
+            }
+
+            let mensaje = `*Nuevo Pedido*%0A%0A`;
+            mensaje += `*Cliente:* ${nombre}%0A`;
+            mensaje += `*Dirección:* ${direccion}%0A`;
+            mensaje += `*Teléfono:* ${telefono}%0A%0A`;
+            mensaje += `*Pedido:*%0A`;
+
+            let total = 0;
+            ordenes.forEach((orden, index) => {
+                mensaje += `%0APizza ${index + 1}:%0A`;
+                mensaje += `- Tamaño: ${orden.tamano}%0A`;
+                mensaje += `- Ingredientes: ${orden.ingredientes.join(', ')}%0A`;
+                mensaje += `- Precio: $${orden.precio}%0A`;
+                total += orden.precio;
+            });
+
+            mensaje += `%0A*Total a pagar: $${total}*`;
+
+            window.open(`https://wa.me/522221587224?text=${mensaje}`);
+            cerrarFormulario();
+            cerrarMenu();
+        }
+
+        function cerrarFormulario() {
+            document.getElementById('formularioPromo').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('promoForm').reset();
+        }
+
+        function limpiarSeleccion() {
+            document.getElementById('menuForm').reset();
+            if (document.getElementById('resumenPedido')) {
+                document.getElementById('resumenPedido').innerHTML = '';
+            }
         }
 
         document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
@@ -134,7 +261,12 @@
                     this.checked = false;
                     alert('Solo puedes seleccionar máximo 4 ingredientes');
                 }
+                actualizarResumen();
             });
+        });
+
+        document.querySelectorAll('input[name="tamano"]').forEach(radio => {
+            radio.addEventListener('change', actualizarResumen);
         });
     </script>
 
@@ -145,24 +277,62 @@
     </div>
 </body>
     <div id="formularioPromo" class="menu-modal">
-        <h2>Ordenar Promo Jumbo</h2>
-        <form id="promoForm">
-            <label>Nombre completo:<br>
-                <input type="text" id="nombre" required>
-            </label><br>
-            <label>Dirección:<br>
-                <textarea id="direccion" required></textarea>
-            </label><br>
-            <label>Número de teléfono:<br>
-                <input type="tel" id="telefono" required>
-            </label><br>
-            <button type="button" onclick="enviarOrden()">Ordenar</button>
-            <button type="button" onclick="cerrarFormulario()">Cancelar</button>
+        <h2 style="color: #d32f2f; text-align: center; font-size: 28px; margin-bottom: 25px;">¡ORDENAR PROMO!</h2>
+        <form id="promoForm" style="max-width: 400px; margin: 0 auto; padding: 20px;">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; color: #333; margin-bottom: 8px;">
+                    Nombre completo:
+                    <input type="text" id="nombre" required 
+                        style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px; 
+                        font-size: 16px; margin-top: 5px; transition: border-color 0.3s ease;">
+                </label>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; color: #333; margin-bottom: 8px;">
+                    Dirección:
+                    <textarea id="direccion" required
+                        style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px;
+                        font-size: 16px; margin-top: 5px; min-height: 100px; resize: vertical;"></textarea>
+                </label>
+            </div>
+            <div style="margin-bottom: 30px;">
+                <label style="display: block; font-weight: bold; color: #333; margin-bottom: 8px;">
+                    Número de teléfono:
+                    <input type="tel" id="telefono" required
+                        style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 8px;
+                        font-size: 16px; margin-top: 5px;">
+                </label>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button type="button" onclick="enviarOrden()"
+                    style="padding: 12px 25px; background-color: #4CAF50; color: white; border: none;
+                    border-radius: 8px; font-size: 16px; cursor: pointer; transition: background-color 0.3s ease;">
+                    Ordenar
+                </button>
+                <button type="button" onclick="cerrarFormulario()"
+                    style="padding: 12px 25px; background-color: #f44336; color: white; border: none;
+                    border-radius: 8px; font-size: 16px; cursor: pointer; transition: background-color 0.3s ease;">
+                    Cancelar
+                </button>
+            </div>
         </form>
     </div>
 
     <script>
-        document.querySelector('.promociones img:first-child').addEventListener('click', function() {
+        // Primera promoción - PROMO JUMBO
+        document.querySelector('.promociones img:nth-child(1)').addEventListener('click', function() {
+            document.getElementById('formularioPromo').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        });
+
+        // Segunda promoción - PROMO FAMILIAR
+        document.querySelector('.promociones img:nth-child(2)').addEventListener('click', function() {
+            document.getElementById('formularioPromo').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        });
+
+        // Tercera promoción - PROMO INDIVIDUAL
+        document.querySelector('.promociones img:nth-child(3)').addEventListener('click', function() {
             document.getElementById('formularioPromo').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
         });
@@ -178,19 +348,75 @@
             const telefono = document.getElementById('telefono').value;
 
             if(nombre && direccion && telefono) {
-                const mensaje = encodeURIComponent(
-                    `*Nueva Orden - Promo Jumbo*\n` +
-                    `Nombre: ${nombre}\n` +
-                    `Dirección: ${direccion}\n` +
-                    `Teléfono: ${telefono}`
-                );
-                window.open(`https://wa.me/522221587224?text=${mensaje}`);
+                let mensaje;
+                const imagenSeleccionada = document.querySelector('.promociones img:hover');
+                const index = Array.from(document.querySelectorAll('.promociones img')).indexOf(imagenSeleccionada);
+
+                switch(index) {
+                    case 0:
+                        mensaje = `*Nueva Orden - PROMO JUMBO Dos pizzas Jumbo 24 rebanadas ingredientes a escoger por solo $450MXN*\n`;
+                        break;
+                    case 1:
+                        mensaje = `*Nueva Orden - PROMO MEDIANAS Dos pizzas medianas y seis rebanadas ingredientes a escoger por solo $240MXN*\n`;
+                        break;
+                    case 2:
+                        mensaje = `*Nueva Orden - PROMO FAMILIARES Dos pizzas familiares 16 rebanadas ingredientes a escoger por solo $330MXN*\n`;
+                        break;
+                    default:
+                        mensaje = `*Nueva Orden*\n`;
+                }
+
+                mensaje += `Nombre: ${nombre}\n` +
+                          `Dirección: ${direccion}\n` +
+                          `Teléfono: ${telefono}`;
+
+                window.open(`https://wa.me/522221587224?text=${encodeURIComponent(mensaje)}`);
                 cerrarFormulario();
             } else {
                 alert('Por favor llena todos los campos');
             }
         }
     </script>
+    <style>
+        .redes-sociales {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .redes-sociales a {
+            display: block;
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .redes-sociales a:hover {
+            transform: scale(1.1);
+        }
+
+        .facebook {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Facebook_f_logo_%282019%29.svg/2048px-Facebook_f_logo_%282019%29.svg.png');
+        }
+
+        .whatsapp {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/WhatsApp.svg/2044px-WhatsApp.svg.png');
+        }
+
+        .instagram {
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/2048px-Instagram_icon.png');
+        }
+    </style>
+
+    <div class="redes-sociales">
+        <a href="https://www.facebook.com/pizzasray.teziutlan" target="_blank" class="facebook" title="Síguenos en Facebook"></a>
+        <a href="https://wa.me/522331072626" target="_blank" class="whatsapp" title="Contáctanos por WhatsApp"></a>
+        <a href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwww.instagram.com%2Fpizzasrayteziutlan%3Ffbclid%3DIwZXh0bgNhZW0CMTAAAR3-3TTLnMgiSsTRE9kqq4X3TRuQMTs8Qi2TjQjb79qVVvRd0lcit79o83M_aem_9QaZT3fljTEMl85z7Qcq0g&h=AT0mzO1RP-QXOZeffM7I0EOMax4wFVnoz_zleOuQ4q0GSjTf9wCwdOCsENCWYxcUOvkemyOqKM5S3wSoAIwLpaOdrM_U7G2gku6cWPaSiH5iXwVQcsZUWFqBrV5vgqdFqa12r9BJIEzS4ArNDxsr" target="_blank" class="instagram" title="Síguenos en Instagram"></a>
+    </div>
 </html>
 
 
