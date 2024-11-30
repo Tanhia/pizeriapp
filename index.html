@@ -175,6 +175,19 @@
             document.getElementById('menuModal').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
             limpiarSeleccion();
+            
+            // Aplicar estilos al botón
+            const botonCerrar = document.querySelector('button[onclick="cerrarMenu()"]');
+            botonCerrar.style.background = 'linear-gradient(45deg, #FF4B2B, #FF416C)';
+            botonCerrar.style.boxShadow = '0 4px 8px rgba(255, 75, 43, 0.3)';
+            botonCerrar.style.transform = 'scale(1)';
+            botonCerrar.style.transition = 'all 0.3s ease';
+            botonCerrar.style.borderRadius = '25px';
+            botonCerrar.style.fontWeight = 'bold';
+            botonCerrar.style.fontSize = '16px';
+            
+            botonCerrar.onmouseover = () => botonCerrar.style.transform = 'scale(1.02)';
+            botonCerrar.onmouseout = () => botonCerrar.style.transform = 'scale(1)';
         }
 
         function actualizarResumen() {
@@ -199,7 +212,25 @@
                     <p>Tamaño: ${tamano}</p>
                     <p>Ingredientes: ${ingredientes.join(', ')}</p>
                     <p>Total: $${precio}</p>
-                    <button type="button" onclick="agregarOrden()">Agregar orden</button>
+                    <button type="button" onclick="agregarOrden()" 
+                        style="width: 100%;
+                        padding: 12px;
+                        background: linear-gradient(45deg, #FF4B2B, #FF416C);
+                        color: white;
+                        border: none;
+                        border-radius: 25px;
+                        margin-top: 15px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        box-shadow: 0 4px 8px rgba(255, 75, 43, 0.3);
+                        transition: all 0.3s ease;
+                        cursor: pointer;
+                        transform: scale(1);"
+                        onmouseover="this.style.transform='scale(1.02)'"
+                        onmouseout="this.style.transform='scale(1)'">
+                        <i class="fas fa-plus-circle" style="margin-right: 8px;"></i>
+                        Agregar orden
+                    </button>
                 `;
             } else {
                 resumenDiv.innerHTML = '';
@@ -234,7 +265,25 @@
                         </div>
                     `).join('')}
                     <p><strong>Total: $${total}</strong></p>
-                    <button onclick="mostrarFormularioEnvio()">Enviar por WhatsApp</button>
+                    <button onclick="mostrarFormularioEnvio(); setTimeout(() => document.getElementById('resumenOrdenes').scrollIntoView({behavior: 'smooth', block: 'end'}), 100);" 
+                        style="width: 100%; 
+                        padding: 12px; 
+                        background: linear-gradient(45deg, #FF4B2B, #FF416C); 
+                        color: white; 
+                        border: none; 
+                        border-radius: 25px; 
+                        margin-top: 15px; 
+                        font-size: 16px; 
+                        font-weight: bold; 
+                        box-shadow: 0 4px 8px rgba(255, 75, 43, 0.3); 
+                        transition: all 0.3s ease; 
+                        cursor: pointer; 
+                        transform: scale(1);"
+                        onmouseover="this.style.transform='scale(1.02)'" 
+                        onmouseout="this.style.transform='scale(1)'">
+                        <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>
+                        Enviar por WhatsApp
+                    </button>
                 `;
 
                 limpiarSeleccion();
@@ -258,8 +307,14 @@
                         <label>Teléfono:</label>
                         <input type="tel" id="telefonoCliente" style="width: 100%; padding: 8px; margin-top: 5px;">
                     </div>
-                    <button onclick="enviarPedidoWhatsApp()" style="width: 100%; padding: 10px; background: #25d366; color: white; border: none; border-radius: 5px; margin-top: 15px;">Enviar y ordenar</button>
-                    <button onclick="cerrarMenu(); limpiarSeleccion(); ordenes = [];" style="width: 100%; padding: 10px; background: #ff5252; color: white; border: none; border-radius: 5px; margin-top: 10px;">Cancelar pedido</button>
+                    <button onclick="enviarPedidoWhatsApp()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #25d366, #128C7E); color: white; border: none; border-radius: 25px; margin-top: 15px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 8px rgba(37, 211, 102, 0.3); transition: all 0.3s ease; cursor: pointer; transform: scale(1);" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                        <i class="fab fa-whatsapp" style="margin-right: 8px;"></i>
+                        Enviar por WhatsApp
+                    </button>
+                    <button onclick="cerrarMenu(); limpiarSeleccion(); ordenes = [];" style="width: 100%; padding: 12px; background: linear-gradient(45deg, #ff5252, #d32f2f); color: white; border: none; border-radius: 25px; margin-top: 10px; font-size: 16px; font-weight: bold; box-shadow: 0 4px 8px rgba(255, 82, 82, 0.3); transition: all 0.3s ease; cursor: pointer; transform: scale(1);" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                        <i class="fas fa-times" style="margin-right: 8px;"></i>
+                        Cancelar pedido
+                    </button>
                 </div>
             `;
             
