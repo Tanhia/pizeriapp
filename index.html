@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pizzas Ray Teziutla</title>
+    <title>Pizzas Ray Teziutlan</title>
     <style>
         * {
             margin: 0;
@@ -425,20 +425,25 @@
     </div>
 
     <script>
+        let promoSeleccionada = null;
+
         // Primera promoción - PROMO JUMBO
         document.querySelector('.promociones img:nth-child(1)').addEventListener('click', function() {
+            promoSeleccionada = 0;
             document.getElementById('formularioPromo').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
         });
 
-        // Segunda promoción - PROMO FAMILIAR
+        // Segunda promoción - PROMO FAMILIAR 
         document.querySelector('.promociones img:nth-child(2)').addEventListener('click', function() {
+            promoSeleccionada = 1;
             document.getElementById('formularioPromo').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
         });
 
         // Tercera promoción - PROMO INDIVIDUAL
         document.querySelector('.promociones img:nth-child(3)').addEventListener('click', function() {
+            promoSeleccionada = 2;
             document.getElementById('formularioPromo').style.display = 'block';
             document.getElementById('overlay').style.display = 'block';
         });
@@ -446,6 +451,7 @@
         function cerrarFormulario() {
             document.getElementById('formularioPromo').style.display = 'none';
             document.getElementById('overlay').style.display = 'none';
+            promoSeleccionada = null;
         }
 
         function enviarOrden() {
@@ -455,18 +461,16 @@
 
             if(nombre && direccion && telefono) {
                 let mensaje;
-                const imagenSeleccionada = document.querySelector('.promociones img:hover');
-                const index = Array.from(document.querySelectorAll('.promociones img')).indexOf(imagenSeleccionada);
 
-                switch(index) {
+                switch(promoSeleccionada) {
                     case 0:
                         mensaje = `*Nueva Orden - PROMO JUMBO Dos pizzas Jumbo 24 rebanadas ingredientes a escoger por solo $450MXN*\n`;
                         break;
                     case 1:
-                        mensaje = `*Nueva Orden - PROMO MEDIANAS Dos pizzas medianas y seis rebanadas ingredientes a escoger por solo $240MXN*\n`;
+                        mensaje = `*Nueva Orden - PROMO MEDIANAS Dos pizzas medianas y seis rebanadas ingredientes a escoger por solo $240MXN*\n`;
                         break;
                     case 2:
-                        mensaje = `*Nueva Orden - PROMO FAMILIARES Dos pizzas familiares 16 rebanadas ingredientes a escoger por solo $330MXN*\n`;
+                        mensaje = `*Nueva Orden - PROMO FAMILIARES Dos pizzas familiares 16 rebanadas ingredientes a escoger por solo $330MXN*\n`;
                         break;
                     default:
                         mensaje = `*Nueva Orden*\n`;
